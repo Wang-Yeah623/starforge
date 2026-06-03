@@ -176,6 +176,8 @@ npm run build
 
 ## Deploy
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FWang-Yeah623%2Fstarforge)
+
 The web report and `/api/*` endpoints deploy to Vercel as-is (framework auto-detected as Vite). Optionally set a `GITHUB_TOKEN` environment variable to raise the GitHub API rate limit.
 
 | Endpoint | Returns |
