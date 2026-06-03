@@ -1,0 +1,35 @@
+name: 'StarForge'
+description: "Audit a repository's launch readiness and comment the score on pull requests."
+author: 'StarForge'
+branding:
+  icon: 'star'
+  color: 'green'
+inputs:
+  path:
+    description: 'Path to the repository to audit'
+    required: false
+    default: '.'
+  token:
+    description: 'GitHub token used to post the pull-request comment'
+    required: false
+    default: ${{ github.token }}
+  comment:
+    description: 'Post or update a pull-request comment with the audit (true/false)'
+    required: false
+    default: 'true'
+  card:
+    description: 'Write starforge-card.svg (+ dark) into the workspace (true/false)'
+    required: false
+    default: 'true'
+  fail-under:
+    description: 'Fail the job if the score is below this number (0 disables the gate)'
+    required: false
+    default: '0'
+outputs:
+  score:
+    description: 'StarForge score from 0 to 100'
+  grade:
+    description: 'Launch-ready | Promising | Needs polish'
+runs:
+  using: 'node20'
+  main: 'dist-action/index.js'
