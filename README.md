@@ -80,7 +80,8 @@ Options:
 | `--repo`, `-r` | Audit a remote repo by `owner/name` (uses `GITHUB_TOKEN` if set) |
 | `--card` | Write an embeddable SVG score card (light + dark) |
 | `--checklist` | Write `STARFORGE_CHECKLIST.md` into the audited repo |
-| `--launch-kit` | Generate AI launch materials with your own key (BYOK) |
+| `--launch` | Print a deterministic launch post (no API key needed) |
+| `--launch-kit` | Generate richer AI launch materials with your own key (BYOK) |
 | `--json` | Print a structured audit report |
 | `--help`, `-h` | Show usage help |
 
@@ -126,7 +127,13 @@ It also exposes `score` and `grade` outputs for later steps.
 
 ## AI Launch Kit
 
-Turn the audit into launch materials — a sharper tagline, description, topics, concrete README fixes, and a "Show HN"-style post. Bring your own key (BYOK); StarForge never stores it.
+Turn the audit into launch materials. No key needed for a quick post:
+
+```bash
+starforge owner/name --launch          # deterministic launch post, instant
+```
+
+For a richer kit — a sharper tagline, description, topics, concrete README fixes, and a "Show HN"-style post — bring your own key (BYOK); StarForge never stores it:
 
 ```bash
 export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY

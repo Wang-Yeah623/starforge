@@ -5,6 +5,7 @@ import { snapshotFromLocal } from './adapters/local'
 import { parseRepoSlug, snapshotFromGithub, type GithubError } from './adapters/github'
 import { embedSnippet, renderCard } from './card/card'
 import { generateLaunchKit, type AiConfig, type AiProvider } from './ai/client'
+import { renderLaunchPost } from './core/launch'
 import type { AuditReport, RepoSnapshot } from './core/types'
 
 type CliOptions = {
@@ -13,6 +14,7 @@ type CliOptions = {
   json: boolean
   checklist: boolean
   card: boolean
+  launch: boolean
   launchKit: boolean
 }
 
@@ -22,6 +24,7 @@ function parseArgs(argv: string[]): CliOptions {
     json: false,
     checklist: false,
     card: false,
+    launch: false,
     launchKit: false,
   }
 
@@ -52,6 +55,11 @@ function parseArgs(argv: string[]): CliOptions {
 
     if (arg === '--card') {
       options.card = true
+      continue
+    }
+
+    if (arg === '--launch') {
+      options.launch = true
       continue
     }
 
@@ -174,8 +182,14 @@ async function main() {
     options.checklist ? 'STARFORGE_CHECKLIST.md' : null,
     options.card ? 'starforge-card.svg' : null,
   ].filter(Boolean)
-  if (wrote.length === 0 && !options.launchKit) {
-    out.write('\nRun --card for an embeddable score card, --checklist for a plan, or --json for data.\n')
+  if (wrote.length === 0 && !options.launch && !options.launchKit) {
+    out.write('\nRun --card for a score card, --launch for a launch post, or --json for data.\n')
+  }
+
+  if (options.launch) {
+    const description = snapshot.manifest?.description || snapshot.github?.description
+    const url = snapshot.github?.homepage || undefined
+    out.write(`\nLaunch post (no key needed):\n${renderLaunchPost(report, { description, url })}\n`)
   }
 
   if (options.launchKit) {
@@ -193,6 +207,7 @@ function printHelp() {
       `  -r, --repo       Audit a remote repo by owner/name (uses GITHUB_TOKEN if set)\n` +
       `      --card       Write an embeddable SVG score card (light + dark)\n` +
       `      --checklist  Write STARFORGE_CHECKLIST.md into the audited repo\n` +
+      `      --launch     Print a deterministic launch post (no API key needed)\n` +
       `      --launch-kit AI launch kit via your own key (ANTHROPIC_API_KEY / OPENAI_API_KEY)\n` +
       `      --json       Print the full structured report as JSON\n` +
       `  -h, --help       Show this help\n`,

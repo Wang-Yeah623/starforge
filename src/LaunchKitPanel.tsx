@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Loader2, Wand2 } from 'lucide-react'
 import { generateLaunchKit, type AiConfig, type AiProvider } from './ai/client'
+import { renderLaunchPost } from './core/launch'
 import type { LaunchKit } from './ai/launch-kit'
 import type { AuditReport } from './core/types'
 
@@ -71,10 +72,15 @@ export function LaunchKitPanel({ report }: { report: AuditReport }) {
       <div className="section-heading">
         <Wand2 size={22} aria-hidden="true" />
         <div>
-          <h2>AI launch kit</h2>
-          <p>Bring your own key. It never leaves your browser — it goes straight to the provider.</p>
+          <h2>Launch kit</h2>
+          <p>An instant launch post below — no key needed. Add your own key for a richer AI kit (tagline, topics, README fixes).</p>
         </div>
       </div>
+
+      <label className="embed-field">
+        <span>Launch post — no key needed</span>
+        <pre className="kit-post">{renderLaunchPost(report)}</pre>
+      </label>
 
       <div className="kit-fields">
         <div className="audit-input">
