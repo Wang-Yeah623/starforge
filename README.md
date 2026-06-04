@@ -1,10 +1,23 @@
 # StarForge
 
-Audit, polish, and launch GitHub projects with a practical star-readiness score.
+> Audit, polish, and launch GitHub projects with a practical star-readiness score.
 
-StarForge is a small CLI and web report that checks whether a repo is easy for strangers to understand, run, trust, and share. It turns README gaps, missing metadata, weak launch assets, and contributor friction into a concrete checklist.
+![CI](https://img.shields.io/badge/CI-passing-2f7a49)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Version](https://img.shields.io/badge/version-0.1.0-d6a844)
+![Node](https://img.shields.io/badge/node-%3E%3D18-339933)
+
+StarForge is a small CLI and web report that scores whether a repo is easy for strangers to **understand, run, trust, and share**. It scans your README, `package.json`, license, CI config, and contributor files, then turns the gaps into a concrete checklist, ready-to-paste badges, and a launch post draft.
 
 ![StarForge preview](./docs/preview.svg)
+
+## What You Get In 5 Seconds
+
+- A 0-100 **star-readiness score** with a clear grade
+- The exact signals you are missing, ranked by impact
+- A markdown checklist written straight into your repo
+- Copy-pasteable **shields.io badges**
+- A short **launch post** tailored to your score
 
 ## Quickstart
 
@@ -12,6 +25,12 @@ StarForge is a small CLI and web report that checks whether a repo is easy for s
 npm install
 npm run starforge -- --path . --checklist
 npm test
+```
+
+For badges and a launch post:
+
+```bash
+npm run starforge -- --path . --badges --launch
 ```
 
 For structured output:
@@ -34,7 +53,7 @@ Many good projects stay quiet because the first five minutes feel unfinished. St
 ## CLI
 
 ```bash
-starforge [--path ./repo] [--json] [--checklist]
+starforge [--path ./repo] [--json] [--checklist] [--badges] [--launch]
 ```
 
 Options:
@@ -44,7 +63,13 @@ Options:
 | `--path`, `-p` | Repository path to audit |
 | `--json` | Print a structured audit report |
 | `--checklist` | Write `STARFORGE_CHECKLIST.md` into the audited repo |
+| `--badges` | Print copy-pasteable shields.io badges |
+| `--launch` | Print a shareable launch post draft |
 | `--help`, `-h` | Show usage help |
+
+StarForge does not just read your README. It also inspects the repo for a
+`LICENSE`, `CONTRIBUTING`, `CHANGELOG`, CI workflows under `.github/workflows`,
+and issue/PR templates, so the score reflects the whole first impression.
 
 ## Web Report
 
@@ -54,16 +79,26 @@ Run the local report UI:
 npm run dev
 ```
 
-Then open the Vite URL printed in your terminal. The UI shows a sample audit, scoring rules, and launch checklist patterns.
+Then open the Vite URL printed in your terminal. The UI has two modes:
+- Paste a GitHub URL (like `https://github.com/facebook/react` or `owner/repo`) to audit a public repo
+- Use the live editor to paste your README and watch the score, signals, and launch post update instantly
 
 ## Example Output
 
 ```text
-StarForge score: 94/100 (Launch-ready)
+StarForge score: 88/100 (Launch-ready)
 Strong launch shape. Only 1 signal needs attention before sharing widely.
 
 Fix next:
-- Add a tiny roadmap with near-term improvements people can imagine joining.
+- Add a short, concrete promise under the H1: who it helps and what it does.
+
+Badges:
+![CI](https://img.shields.io/badge/CI-passing-2f7a49)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
+Launch post:
+I built starforge: Audit, polish, and launch GitHub projects with a practical star-readiness score.
+...
 ```
 
 ## Launch Template
@@ -90,10 +125,13 @@ npm run build
 
 ## Roadmap
 
-- Add badge suggestions for CI, license, npm, and docs
-- Generate release notes and social launch posts
-- Support Python and Rust package metadata
-- Add GitHub Action annotations for pull requests
+- [x] Badge suggestions for CI, license, and version
+- [x] Generate a social launch post from the score
+- [x] Scan license, CI, contributing, and template files (not just the README)
+- [x] Audit remote repos directly from a GitHub URL
+- [ ] Generate release notes from commit history
+- [ ] Support Python and Rust package metadata
+- [ ] GitHub Action annotations for pull requests
 
 ## Contributing
 

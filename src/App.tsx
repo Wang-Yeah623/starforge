@@ -1,16 +1,19 @@
+import { useMemo, useState } from 'react'
 import {
   ArrowUpRight,
   BadgeCheck,
   CheckCircle2,
   ClipboardCheck,
   Github,
+  Megaphone,
   ShieldCheck,
   Sparkles,
   TerminalSquare,
   XCircle,
 } from 'lucide-react'
 import './App.css'
-import { auditProject } from './lib/audit'
+import { auditProject, generateLaunchPost, type ProjectInput } from './lib/audit'
+import { fetchRepoInput } from './lib/github'
 
 const sampleReadme = `# StarForge
 A practical tool that helps maintainers prepare a GitHub launch with less guesswork.
@@ -41,16 +44,12 @@ Share this with maintainers before release day.
 MIT
 `
 
-const report = auditProject({
-  projectName: 'starforge',
-  readme: sampleReadme,
-  packageJson: {
-    description: 'Audit, polish, and launch GitHub projects.',
-    keywords: ['github', 'open-source', 'readme', 'launch', 'stars'],
-    license: 'MIT',
-    scripts: { test: 'vitest run' },
-  },
-})
+const samplePackageJson = {
+  description: 'Audit, polish, and launch GitHub projects.',
+  keywords: ['github', 'open-source', 'readme', 'launch', 'stars'],
+  license: 'MIT',
+  scripts: { test: 'vitest run' },
+}
 
 const launchSteps = [
   'Tighten the first sentence until a stranger understands the project.',
@@ -59,7 +58,47 @@ const launchSteps = [
   'Prepare one short post for GitHub, X, Reddit, or Hacker News.',
 ]
 
+const sampleInput: ProjectInput = {
+  projectName: 'starforge',
+  readme: sampleReadme,
+  packageJson: samplePackageJson,
+  hasLicenseFile: true,
+  hasContributingFile: true,
+  hasCi: true,
+  hasChangelog: false,
+  hasIssueTemplates: true,
+}
+
 function App() {
+  const [readme, setReadme] = useState(sampleReadme)
+  const [base, setBase] = useState<ProjectInput>(sampleInput)
+  const [repoUrl, setRepoUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const input = useMemo(() => ({ ...base, readme }), [base, readme])
+  const report = useMemo(() => auditProject(input), [input])
+  const launchPost = useMemo(() => generateLaunchPost(report, input), [report, input])
+
+  async function handleAudit(event: React.FormEvent) {
+    event.preventDefault()
+    if (!repoUrl.trim() || loading) {
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    try {
+      const fetched = await fetchRepoInput(repoUrl)
+      setBase(fetched)
+      setReadme(fetched.readme ?? '')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to audit that repository.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const passed = report.items.filter((item) => item.passed)
   const failed = report.items.filter((item) => !item.passed)
 
@@ -96,8 +135,8 @@ function App() {
               checklist.
             </p>
             <div className="hero-actions">
-              <a className="primary-action" href="#report">
-                View audit
+              <a className="primary-action" href="#try">
+                Try it live
                 <ArrowUpRight size={18} aria-hidden="true" />
               </a>
               <code>npx starforge --path .</code>
@@ -117,6 +156,53 @@ function App() {
             </div>
           </section>
         </div>
+      </section>
+
+      <section className="content-grid" id="try">
+        <div className="panel wide">
+          <div className="section-heading">
+            <TerminalSquare size={22} aria-hidden="true" />
+            <div>
+              <h2>Try It Live</h2>
+              <p>Audit any public GitHub repo, or paste a README below.</p>
+            </div>
+          </div>
+          <form className="repo-form" onSubmit={handleAudit}>
+            <input
+              className="repo-input"
+              type="text"
+              value={repoUrl}
+              onChange={(event) => setRepoUrl(event.target.value)}
+              placeholder="owner/repo or https://github.com/owner/repo"
+              aria-label="GitHub repository to audit"
+            />
+            <button className="primary-action" type="submit" disabled={loading}>
+              <Github size={18} aria-hidden="true" />
+              {loading ? 'Auditing…' : 'Audit repo'}
+            </button>
+          </form>
+          {error ? <p className="repo-error">{error}</p> : null}
+          <textarea
+            className="readme-input"
+            value={readme}
+            onChange={(event) => setReadme(event.target.value)}
+            spellCheck={false}
+            aria-label="README content to audit"
+          />
+        </div>
+
+        <aside className="panel">
+          <div className="section-heading">
+            <Megaphone size={22} aria-hidden="true" />
+            <div>
+              <h2>Launch Post</h2>
+              <p>Auto-generated from your live score.</p>
+            </div>
+          </div>
+          <pre className="launch-post">
+            <code>{launchPost}</code>
+          </pre>
+        </aside>
       </section>
 
       <section className="content-grid" id="report">

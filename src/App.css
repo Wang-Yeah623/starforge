@@ -291,6 +291,69 @@ pre {
   line-height: 1;
 }
 
+.repo-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.repo-input {
+  flex: 1 1 240px;
+  min-height: 46px;
+  padding: 10px 13px;
+  border: 1px solid #d5dacd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1d2a21;
+  font: inherit;
+}
+
+.repo-input:focus-visible {
+  outline: 2px solid #2f6b45;
+  outline-offset: 1px;
+}
+
+.repo-form .primary-action {
+  border: none;
+  cursor: pointer;
+}
+
+.repo-form .primary-action:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.repo-error {
+  margin: 0 0 12px;
+  color: #b85b42 !important;
+  font-weight: 650;
+}
+
+.readme-input {
+  width: 100%;
+  min-height: 320px;
+  padding: 14px;
+  border: 1px solid #d5dacd;
+  border-radius: 8px;
+  background: #fbfcf8;
+  color: #1d2a21;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.readme-input:focus-visible {
+  outline: 2px solid #2f6b45;
+  outline-offset: 1px;
+}
+
+.launch-post {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 @media (max-width: 820px) {
   .hero-section {
     min-height: auto;
