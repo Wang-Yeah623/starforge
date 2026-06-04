@@ -1,0 +1,22 @@
+name: StarForge
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: StarForge audit
+        uses: ./
+        with:
+          comment: 'true'
+          card: 'false'
+          # fail-under: '70'  # uncomment to gate merges on launch readiness

@@ -7,19 +7,25 @@
   "bin": {
     "starforge": "./dist-cli/cli.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
-    "dist",
     "dist-cli",
+    "dist-action",
+    "action.yml",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && tsup",
+    "build": "tsc -b && vite build && tsup && tsup --config tsup.action.config.ts",
+    "build:action": "tsup --config tsup.action.config.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "starforge": "tsx src/cli.ts"
+    "starforge": "tsx src/cli.ts",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "github",
@@ -27,15 +33,22 @@
     "readme",
     "launch",
     "stars",
-    "cli"
+    "cli",
+    "github-action",
+    "repository-health",
+    "badge",
+    "developer-tools"
   ],
-  "author": "",
+  "author": "Wang-Yeah623",
   "license": "MIT",
-  "dependencies": {
-    "lucide-react": "^0.468.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wang-Yeah623/starforge.git"
   },
+  "bugs": {
+    "url": "https://github.com/Wang-Yeah623/starforge/issues"
+  },
+  "homepage": "https://github.com/Wang-Yeah623/starforge#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.3",
@@ -46,6 +59,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "tsx": "^4.21.0",
     "tsup": "^8.5.1",
     "typescript": "~6.0.2",
